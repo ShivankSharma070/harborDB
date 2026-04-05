@@ -1,5 +1,6 @@
 #pragma once
 #include <stdint.h>
+#include "storage.h"
 
 // Node types
 typedef enum {
@@ -31,6 +32,8 @@ extern const uint32_t LEAF_NODE_CELL_SIZE ;
 extern const uint32_t LEAF_NODE_SPACE_FOR_CELLS ;
 extern const uint32_t LEAF_NODE_MAX_CELLS ;
 
+void print_leaf_node(void* node);
+
 /* leaf_node_num_cells returns a pointer to num_cells sections of leaf node */
 uint32_t* leaf_node_num_cells(void* node);
 
@@ -44,3 +47,4 @@ uint32_t* leaf_node_value(void* node, uint32_t cell_num);
 /* Initialize leaf node by setting num_cell value to 0*/
 void initialize_leaf_node(void* node);
 
+void leaf_node_insert(Cursor_t* cursor, uint32_t key, Row_t* value);

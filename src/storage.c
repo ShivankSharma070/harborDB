@@ -48,15 +48,14 @@ void* get_page(Pager_t* pager, uint32_t page_num) {
     if(pager->pages[page_num] == NULL) {
         // Cache Miss -> allocates memory for page
         void* page = malloc(PAGE_SIZE);
-        // Number of pages possible to store in file
-        uint32_t num_pages = pager->file_length / PAGE_SIZE;
+        // NOTE: using pager->num_pages instead of again calculating
 
         // Is there any partial page that can be stored ?
         if(pager->file_length % PAGE_SIZE){
-            num_pages += 1;
+            pager->num_pages += 1;
         }
 
-        if(page_num <= num_pages) {
+        if(page_num <= pager->num_pages) {
             // Read from file to page.
             lseek(pager->file_discriptor, PAGE_SIZE * page_num, SEEK_SET);
             ssize_t bytes_read = read(pager->file_discriptor, page, PAGE_SIZE);
@@ -127,10 +126,14 @@ Pager_t* pager_open(const char* filename) {
 
 Table_t* db_open(const char* filename) {
     Pager_t* pager = pager_open(filename);
-    uint32_t num_rows = pager->file_length/ROW_SIZE;
     Table_t* table = (Table_t*)malloc(sizeof(Table_t));
-    table->num_rows = num_rows;
     table->pager = pager;
+    
+    table->root_num_pages = 0;
+    if(pager->num_pages == 0) {
+        // New database file -> initialize node as leaf node 
+    }
+
 
     return table;
 }

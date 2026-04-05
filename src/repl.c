@@ -1,4 +1,5 @@
 #include "repl.h"
+#include "btree.h"
 #include "parser.h"
 #include "storage.h"
 #include "vm.h"
@@ -37,10 +38,26 @@ void read_input(InputBuffer_t* inputBuffer) {
     inputBuffer->buffer[bytes_read - 1] = 0;
 }
 
+void print_constants() {
+    printf("ROW_SIZE: %lu\n", ROW_SIZE);
+    printf("COMMON_NODE_HEADER_SIZE: %d\n", COMMON_NODE_HEADER_SIZE);
+    printf("LEAF_NODE_HEADER_SIZE: %d\n", LEAF_NODE_HEADER_SIZE);
+    printf("LEAF_NODE_CELL_SIZE: %d\n", LEAF_NODE_CELL_SIZE);
+    printf("LEAF_NODE_SPACE_FOR_CELLS: %d\n", LEAF_NODE_SPACE_FOR_CELLS);
+    printf("LEAF_NODE_MAX_CELLS: %d\n", LEAF_NODE_MAX_CELLS);
+}
+
 MetaCommandResult do_meta_command(InputBuffer_t* inputBuffer, Table_t* table) {
     if(strcmp(inputBuffer->buffer, ".exit")== 0 ) {
             db_close(table);
             exit(EXIT_SUCCESS);
+    } else if(strcmp(inputBuffer->buffer, ".constant") == 0) {
+            print_constants();
+            return META_COMMAND_SUCCESS;
+    } else if(strcmp(inputBuffer->buffer, ".btree") == 0) {
+            printf("Tree:\n");
+            print_leaf_node(get_page(table->pager, 0));
+            return META_COMMAND_SUCCESS;
     } else {
         return META_COMMAND_UNRECOGNISED_COMMAND;
     }

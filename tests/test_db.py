@@ -26,7 +26,7 @@ def test_insert_and_retrieves():
     assertList(output, expected_output)
 
 def test_error_on_table_full(): 
-    input = [f'insert {i} user{i} user{i}.com' for i in range(1700)]
+    input = [f'insert {i} user{i} user{i}.com' for i in range(1500)] + [".exit"]
     output = run_script(input)
     assert "Table Full" in output
 
@@ -55,3 +55,18 @@ def test_disk_persistance():
     expected_output = ["(1 user1 example1.com)", "Executed"]
     assertList(output, expected_output)
     remove_file("test_disk_persistance.db")
+
+def test_print_btree_structure(): 
+    input = [f'insert {i} user{i} example{i}.com' for i in range(3)] + ['.btree','.exit'];
+    output = run_script(input)
+    expected_output = [
+        "Executed",
+        "Executed",
+        "Executed",
+        "Tree:",
+        "Leaf (size: 3)",
+        " - 0: 0",
+        " - 1: 1",
+        " - 2: 2",
+    ]
+    assertList(output, expected_output);

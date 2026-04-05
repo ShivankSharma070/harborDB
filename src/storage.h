@@ -71,6 +71,8 @@ void* cursor_value(Cursor_t* cursor);
 void cursor_advance(Cursor_t* cursor);
 Pager_t* pager_open(const char* filename);
 void pager_flush(Pager_t* pager, uint32_t page_num);
+void* get_page(Pager_t* pager, uint32_t page_num);
+
 Table_t* db_open(const char*); 
 void db_close(Table_t*);
 
@@ -84,3 +86,4 @@ Cursor_t* table_start(Table_t* table);
 * table_end creates and returns a new 'Cursor' object pointing to the last row of the table
 */
 Cursor_t* table_end(Table_t* table);
+

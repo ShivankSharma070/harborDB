@@ -8,7 +8,7 @@ SRC_DIR = src
 TEST_DIR = tests
 DATABASEFILE = mydb.db
 
-SOURCES = main.c repl.c vm.c parser.c storage.c
+SOURCES = main.c repl.c vm.c parser.c storage.c btree.c
 OBJECTS = $(patsubst %.c, $(BUILD_DIR)/%.o, $(SOURCES))
 DEPS = &(OBJECTS:.o=.d)
 
@@ -18,6 +18,7 @@ run : $(BIN_DIR)/$(TARGET)
 	$(BIN_DIR)/$(TARGET) $(DATABASEFILE)
 
 $(BIN_DIR)/$(TARGET): $(OBJECTS) | $(BIN_DIR)
+	rm $(DATABASEFILE) 
 	$(CC) $^ -o $@
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c | $(BUILD_DIR)
@@ -25,7 +26,7 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c | $(BUILD_DIR)
 
 rebuild: clean all 
 
-test: $(TEST_DIR)
+test: $(BIN_DIR)/$(TARGET) | $(TEST_DIR)
 	@pytest $(TEST_DIR)/ -vvs
 
 -include $(DEPS)

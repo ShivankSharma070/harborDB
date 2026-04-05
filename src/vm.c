@@ -1,17 +1,17 @@
 #include "vm.h"
 #include "storage.h"
+#include "btree.h"
 #include <stdlib.h>
 
 ExecuteResult execute_insert(Statement_t* statement, Table_t* table){
-    if(table->num_rows >= TABLE_MAX_ROW) {
+    void* node = get_page(table->pager, table->root_num_pages);
+    if(*(leaf_node_num_cells(node)) >= LEAF_NODE_MAX_CELLS) {
         return EXECUTE_TABLE_FULL;
     }
 
     Row_t* row_to_insert = &(statement->row_to_insert);
     Cursor_t* cursor = table_end(table);
-    serialize_row(row_to_insert,cursor_value(cursor));
-    table->num_rows+=1;
-
+    leaf_node_insert(cursor, row_to_insert->id, row_to_insert );
     free(cursor);
 
     return EXECUTE_SUCCESS;

@@ -1,4 +1,5 @@
 *.out
+*.py[cod]
 *.exe
 *.gch
 *.db
